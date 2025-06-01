@@ -5,7 +5,8 @@ import com.example.sleeprism.dto.AuthRequestDTO;
 import com.example.sleeprism.dto.AuthResponseDTO;
 import com.example.sleeprism.jwt.JwtTokenProvider;
 import com.example.sleeprism.entity.User;
-import com.example.sleeprism.entity.UserRole; // UserRole enum import
+import com.example.sleeprism.entity.UserRole;
+import com.example.sleeprism.entity.UserStatus; // UserStatus 임포트 추가
 import com.example.sleeprism.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +104,9 @@ public class AuthController {
         .password(passwordEncoder.encode(authRequestDto.getPassword())) // 비밀번호를 암호화하여 저장합니다.
         // username이 제공되면 사용하고, 없으면 이메일을 기본값으로 설정합니다.
         .username(authRequestDto.getUsername() != null ? authRequestDto.getUsername() : authRequestDto.getEmail())
+        .nickname(authRequestDto.getNickname())
         .role(UserRole.USER) // 기본 권한은 UserRole.USER로 설정합니다.
+        .status(UserStatus.ACTIVE) // <--- 이 라인을 추가했습니다! (UserStatus.ACTIVE로 기본값 설정)
         .build();
 
     // 3. 사용자 저장: 새로 생성된 사용자 엔티티를 데이터베이스에 저장합니다.

@@ -24,4 +24,5 @@ public class AuthResponseDTO {
   private String email;
   private String username;
   private String role;
+
 }
