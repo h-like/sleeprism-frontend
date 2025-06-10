@@ -65,7 +65,7 @@ public class UserService {
   // 실제 인증은 Spring Security 필터 체인에서 처리합니다.
   @Transactional
   public UserResponseDTO signIn(UserSignInRequestDTO requestDto, String ipAddress) {
-    Optional<User> userOptional = userRepository.findByUsernameOrEmail(requestDto.getUsernameOrEmail(), requestDto.getUsernameOrEmail());
+    Optional<User> userOptional = userRepository.findByEmail(requestDto.getEmail());
 
     boolean successStatus = false;
     User user = null;

@@ -111,6 +111,11 @@ public class SecurityConfig {
             // "/api/files/**" : 파일 업로드/다운로드 API
             // "/oauth2/**", "/login/**" : OAuth2 로그인 관련 경로
             .requestMatchers("/", "/sleeprism/**", "/error", "/api/auth/**", "/api/files/**", "/oauth2/**", "/login/**").permitAll()
+            .requestMatchers("/api/users/signup", "/api/users/signin").permitAll()
+            .requestMatchers("/api/posts",
+                "/api/posts/**",
+                "/api/posts/upload-image",
+                "/api/posts.files/**").permitAll()
             // "/admin/**" 경로에는 "ADMIN" 역할을 가진 사용자만 접근을 허용합니다.
             .requestMatchers("/admin/**").hasRole("ADMIN")
             // 나머지 모든 요청은 인증된 사용자만 접근을 허용합니다.

@@ -8,6 +8,7 @@ import com.example.sleeprism.entity.PostCategory;
 import com.example.sleeprism.entity.User;
 import com.example.sleeprism.repository.PostRepository;
 import com.example.sleeprism.repository.UserRepository;
+import com.example.sleeprism.util.HtmlSanitizer;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +31,13 @@ public class PostService {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
+    // HTML Sanitization 적용
+    String sanitizedContent = HtmlSanitizer.sanitize(requestDto.getContent());
+
     Post post = Post.builder()
         .user(user)
         .title(requestDto.getTitle())
-        .content(requestDto.getContent())
+        .content(sanitizedContent)  // 정화된 HTML 내용 저장
         .category(requestDto.getCategory())
         .build();
 
@@ -61,7 +65,10 @@ public class PostService {
       throw new IllegalArgumentException("You do not have permission to update this post.");
     }
 
-    post.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getCategory());
+    // HTML Sanitization 적용
+    String sanitizedContent = HtmlSanitizer.sanitize(requestDto.getContent());
+
+    post.update(requestDto.getTitle(), sanitizedContent, requestDto.getCategory());
     // save를 명시적으로 호출하지 않아도 @Transactional에 의해 변경 감지(Dirty Checking) 후 업데이트됨
     return new PostResponseDTO(post);
   }

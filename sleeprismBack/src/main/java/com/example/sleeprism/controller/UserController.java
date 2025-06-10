@@ -33,7 +33,7 @@ public class UserController {
   // 일반 로그인 (Spring Security와 연동)
   // 실제로는 Spring Security의 UsernamePasswordAuthenticationFilter 등이 이 역할을 대신합니다.
   // 여기서는 간단한 테스트용으로만 사용하거나, 로그인 로그를 남기는 용도로 활용됩니다.
-  @PostMapping("/signin")
+  @GetMapping("/signin")
   public ResponseEntity<UserResponseDTO> signIn(
       @Valid @RequestBody UserSignInRequestDTO requestDto,
       HttpServletRequest request // IP 주소 획득
