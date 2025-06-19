@@ -8,18 +8,18 @@ import com.example.sleeprism.entity.PostCategory;
 import com.example.sleeprism.entity.User;
 import com.example.sleeprism.repository.PostRepository;
 import com.example.sleeprism.repository.UserRepository;
-import com.example.sleeprism.util.HtmlSanitizer;
+import com.example.sleeprism.util.HtmlSanitizer; // 이 유틸리티 클래스가 존재한다고 가정
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Spring의 @Transactional 사용
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true) // 기본적으로 읽기 전용 트랜잭션, 쓰기 메서드에서 @Transactional 재선언
 public class PostService {
   private final PostRepository postRepository;
   private final UserRepository userRepository;
@@ -35,9 +35,9 @@ public class PostService {
     String sanitizedContent = HtmlSanitizer.sanitize(requestDto.getContent());
 
     Post post = Post.builder()
-        .user(user)
+        .user(user) // Post 엔티티의 @Builder에서 user는 originalAuthor와 currentOwner 모두를 설정합니다.
         .title(requestDto.getTitle())
-        .content(sanitizedContent)  // 정화된 HTML 내용 저장
+        .content(sanitizedContent)
         .category(requestDto.getCategory())
         .build();
 
@@ -60,9 +60,12 @@ public class PostService {
     Post post = postRepository.findByIdAndIsDeletedFalse(postId)
         .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
 
-    // 작성자만 수정 가능하도록 검증
-    if (!post.getUser().getId().equals(userId)) {
+    // 게시글 수정 권한 검증: 원본 작성자만 수정 가능하며, 이미 판매된 게시글은 수정 불가
+    if (!post.getOriginalAuthor().getId().equals(userId)) {
       throw new IllegalArgumentException("You do not have permission to update this post.");
+    }
+    if (post.isSold()) {
+      throw new IllegalStateException("Sold posts cannot be updated.");
     }
 
     // HTML Sanitization 적용
@@ -79,17 +82,21 @@ public class PostService {
     Post post = postRepository.findByIdAndIsDeletedFalse(postId)
         .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
 
-    // 작성자만 삭제 가능하도록 검증
-    if (!post.getUser().getId().equals(userId)) {
+    // 게시글 삭제 권한 검증: 원본 작성자만 삭제 가능하며, 이미 판매된 게시글은 삭제 불가
+    if (!post.getOriginalAuthor().getId().equals(userId)) {
       throw new IllegalArgumentException("You do not have permission to delete this post.");
+    }
+    if (post.isSold()) {
+      throw new IllegalStateException("Sold posts cannot be deleted.");
     }
 
     post.delete(); // isDeleted를 true로 변경
+    // postRepository.save(post); // Dirty Checking으로 자동 저장될 수 있으나, 명시적으로 호출해도 무방
   }
 
   // 모든 게시글 조회 (삭제되지 않은 게시글만)
   public List<PostResponseDTO> getAllPosts() {
-    return postRepository.findByIsDeletedFalseOrderByCreatedAtDesc() // 이 메서드는 PostRepository에 추가해야 함
+    return postRepository.findByIsDeletedFalseOrderByCreatedAtDesc()
         .stream()
         .map(PostResponseDTO::new)
         .collect(Collectors.toList());
@@ -103,6 +110,6 @@ public class PostService {
         .collect(Collectors.toList());
   }
 
-  // TODO: 검색, 인기 게시글 등의 추가 메서드 구현
+  // TODO: 검색, 인기 게시글 등의 추가 메서드 구현 (기존 PostService 로직과 동일하게 유지)
 
 }

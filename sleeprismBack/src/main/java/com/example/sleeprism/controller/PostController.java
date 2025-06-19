@@ -7,8 +7,10 @@ import com.example.sleeprism.entity.PostCategory;
 import com.example.sleeprism.entity.User;
 import com.example.sleeprism.service.FileStorageService;
 import com.example.sleeprism.service.PostService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,9 +27,18 @@ import java.util.Map;
 @RestController // RESTful API 컨트롤러
 @RequestMapping("/api/posts") // 기본 URL 경로 설정
 @RequiredArgsConstructor
+@Slf4j
 public class PostController {
   private final PostService postService;
   private final FileStorageService fileStorageService;
+
+  // UserDetails에서 userId를 추출하는 헬퍼 메서드
+  private Long extractUserIdFromUserDetails(UserDetails userDetails) {
+    if (userDetails instanceof User) {
+      return ((User) userDetails).getId();
+    }
+    throw new IllegalStateException("AuthenticationPrincipal is not of type User.");
+  }
 
   // 게시글 생성 (인증된 사용자만 가능하다고 가정)
   @PostMapping
@@ -36,16 +47,32 @@ public class PostController {
       @AuthenticationPrincipal UserDetails userDetails
   ) {
     Long userId;
-    // userDetails가 User 엔티티 자체이므로, User로 바로 캐스팅하여 ID를 가져옵니다.
-    if (userDetails instanceof User) {
-      userId = ((User) userDetails).getId();
-    } else {
-      // 인증되지 않은 사용자 또는 UserDetails 타입이 예상과 다른 경우 처리
+    try {
+      userId = extractUserIdFromUserDetails(userDetails);
+      log.info("createPost method reached. User ID: {}", userId);
+    } catch (IllegalStateException e) {
+      log.error("Failed to extract user ID from UserDetails: {}", e.getMessage());
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 401 Unauthorized
     }
 
-    PostResponseDTO responseDto = postService.createPost(requestDto, userId);
-    return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    // requestDto 내용 로깅 (파싱 성공 여부 확인)
+    log.info("Received PostCreateRequestDTO: Title='{}', Category='{}', Content length={}",
+        requestDto.getTitle(), requestDto.getCategory(), requestDto.getContent() != null ? requestDto.getContent().length() : 0);
+
+    try {
+      PostResponseDTO responseDto = postService.createPost(requestDto, userId);
+      log.info("PostService.createPost succeeded. New Post ID: {}", responseDto.getId());
+      return ResponseEntity.status(HttpStatus.CREATED).body(responseDto); // DTO로 변환하여 반환
+    } catch (EntityNotFoundException e) {
+      log.error("Error creating post: User not found with ID {}. Error: {}", userId, e.getMessage());
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found (사용자를 찾을 수 없을 때)
+    } catch (IllegalArgumentException e) {
+      log.error("Error creating post: Invalid argument. Error: {}", e.getMessage());
+      return ResponseEntity.badRequest().build(); // 400 Bad Request
+    } catch (Exception e) {
+      log.error("An unexpected error occurred while creating post: {}", e.getMessage(), e);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 Internal Server Error
+    }
   }
 
   // 특정 게시글 조회
