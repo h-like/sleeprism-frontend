@@ -4,9 +4,7 @@ import com.example.sleeprism.entity.DreamInterpretation;
 import com.example.sleeprism.entity.TarotCard;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -20,16 +18,19 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@Slf4j // 로거 추가
-public class DreamInterpretationResponseDTO { // <-- @Builder 제거
-  private Long id;
-  private Long postId;
-  private Long userId;
-  private String userName;
+@AllArgsConstructor
+@Builder // <-- 다시 @Builder 어노테이션 추가
+@Slf4j
+public class DreamInterpretationResponseDTO {
+  private Long id; // DreamInterpretation 엔티티의 ID
+  private Long postId; // 해몽 대상 꿈 게시글 ID
+  private Long userId; // 해몽 요청자 ID
+  private String userName; // 해몽 요청자 닉네임
 
+  // AI가 제안하는 여러 해몽 옵션들
   private List<InterpretationOptionDTO> interpretationOptions;
 
+  // 사용자가 최종 선택한 해몽 옵션 정보
   private Integer selectedOptionIndex;
   private Long selectedTarotCardId;
   private String selectedTarotCardName;
@@ -41,6 +42,8 @@ public class DreamInterpretationResponseDTO { // <-- @Builder 제거
   /**
    * DreamInterpretation 엔티티를 기반으로 DTO를 생성하는 생성자.
    * AI 응답 내용을 파싱하여 interpretationOptions를 채웁니다.
+   * 이 생성자는 DreamInterpretationService에서만 호출될 것입니다.
+   * (외부에서 직접 DTO를 생성할 때는 빌더 패턴을 사용합니다.)
    *
    * @param dreamInterpretation 변환할 DreamInterpretation 엔티티 객체
    * @param objectMapper ObjectMapper 인스턴스 (Service에서 주입받아 사용)
@@ -62,11 +65,6 @@ public class DreamInterpretationResponseDTO { // <-- @Builder 제거
 
     this.interpretationOptions = new ArrayList<>();
     try {
-      // AI 응답 내용이 {"interpretations": [ {title: "", content: "", tarotCardId: N}, ... ]} 형태라고 가정
-      // tarotCardId는 AI가 제공하지 않고, 서비스 계층에서 매칭하여 JSON에 추가한다고 가정합니다.
-      // ObjectMapper가 List<Map<String, String>> 형태의 JSON을 InterpretationOptionDTO 리스트로 바로 변환할 수 있도록
-      // AI 응답 JSON 구조와 InterpretationOptionDTO 필드를 매칭시킬 수 있어야 합니다.
-      // 복잡한 JSON 파싱을 위해 TypeReference 사용
       Map<String, List<Map<String, Object>>> aiResponseMap = objectMapper.readValue(
           dreamInterpretation.getAiResponseContent(),
           new com.fasterxml.jackson.core.type.TypeReference<Map<String, List<Map<String, Object>>>>() {}
@@ -76,13 +74,14 @@ public class DreamInterpretationResponseDTO { // <-- @Builder 제거
       if (interpretations != null) {
         for (int i = 0; i < interpretations.size(); i++) {
           Map<String, Object> interpretationData = interpretations.get(i);
+          // AI 응답 JSON 내에 tarotCardId가 있다면 사용하고, 없다면 null 처리
           Long optionTarotCardId = interpretationData.get("tarotCardId") != null ? ((Number) interpretationData.get("tarotCardId")).longValue() : null;
           TarotCard matchedTarotCard = null;
           if (optionTarotCardId != null && tarotCards.containsKey(optionTarotCardId)) {
             matchedTarotCard = tarotCards.get(optionTarotCardId);
           }
 
-          this.interpretationOptions.add(InterpretationOptionDTO.builder() // <-- 이제 builder() 사용 가능
+          this.interpretationOptions.add(InterpretationOptionDTO.builder()
               .optionIndex(i)
               .title((String) interpretationData.get("title"))
               .content((String) interpretationData.get("content"))
@@ -96,7 +95,7 @@ public class DreamInterpretationResponseDTO { // <-- @Builder 제거
     } catch (JsonProcessingException e) {
       log.error("Failed to parse AI response content for DreamInterpretation ID {}: {}", dreamInterpretation.getId(), e.getMessage());
       this.errorMessage = "AI 응답 내용을 파싱하는 데 실패했습니다.";
-    } catch (Exception e) { // JSON 파싱 외의 다른 예외도 잡기 위함
+    } catch (Exception e) {
       log.error("An unexpected error occurred during DTO creation for DreamInterpretation ID {}: {}", dreamInterpretation.getId(), e.getMessage(), e);
       this.errorMessage = "해몽 데이터를 처리하는 중 오류가 발생했습니다.";
     }
