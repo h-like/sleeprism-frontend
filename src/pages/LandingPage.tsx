@@ -76,17 +76,17 @@ const FeaturesSection = () => {
                 </div>
                 <div className="features-grid">
                     <div className="feature-item" ref={item1Ref}>
-                        <img src="https://placehold.co/800x600/1a1a1c/a1a1a6?text=꿈+기록+화면" alt="꿈 기록 화면 예시" className="feature-image" />
+                        <img src="images/Landing/register-post.png" alt="꿈 기록 화면 예시" className="feature-image" />
                         <h3 className="feature-title">1. 꿈을 기록하세요</h3>
                         <p className="feature-description">어젯밤 꾼 꿈을 자유롭게 적어보세요. 사소한 디테일이 해석의 중요한 열쇠가 될 수 있습니다.</p>
                     </div>
                     <div className="feature-item" ref={item2Ref}>
-                        <img src="https://placehold.co/800x600/1a1a1c/a1a1a6?text=AI+해석과+타로카드" alt="AI와 타로카드 해석 예시" className="feature-image" />
+                        <img src="images/Landing/tarot-img.png" alt="AI와 타로카드 해석 예시" className="feature-image" />
                         <h3 className="feature-title">2. AI와 타로의 만남</h3>
                         <p className="feature-description">강력한 AI가 꿈의 상징을 분석하고, 당신이 직접 선택한 타로카드가 직관적인 통찰을 더합니다.</p>
                     </div>
                     <div className="feature-item" ref={item3Ref}>
-                        <img src="https://placehold.co/800x600/1a1a1c/a1a1a6?text=ASMR+사운드+믹서" alt="ASMR 사운드 믹서 예시" className="feature-image" />
+                        <img src="images/Landing/sound-mixer.png" alt="ASMR 사운드 믹서 예시" className="feature-image" />
                         <h3 className="feature-title">3. 나만의 ASMR 제작</h3>
                         <p className="feature-description">빗소리, 모닥불 소리, 우주 소리 등 다양한 사운드를 믹스하여 꿈꾸기 좋은 환경을 만들어보세요.</p>
                     </div>
@@ -158,17 +158,17 @@ const MarketplaceSection = () => {
                         <a href="#" className="marketplace-link">길몽 마켓 둘러보기 &rarr;</a>
                     </div>
                     <div className="marketplace-image-container">
-                        <img src="https://placehold.co/1200x900/000000/a1a1a6?text=길몽+컬렉션" alt="길몽 컬렉션 이미지" className="marketplace-image" />
+                        <img src="images/Landing/sale-request.png" alt="길몽 컬렉션 이미지" className="marketplace-image" />
                     </div>
                 </div>
                 <div className="marketplace-item reverse" ref={item2Ref}>
                     <div className="marketplace-text">
-                        <h3 className="marketplace-title">창의적 영감을 주는<br />예지몽과 아이디어</h3>
-                        <p className="marketplace-description">예술가, 작가, 개발자를 위한 특별한 꿈 마켓. 다른 사람의 꿈에서 새로운 아이디어를 발견하고 당신의 창작 활동에 날개를 다세요.</p>
+                        <h3 className="marketplace-title">꿈에서 시작되는 소통,<br />아이디어로 이어지다</h3>
+                        <p className="marketplace-description">꿈은 혼자 꾸지 않아도 됩니다. 다른 사람의 꿈 이야기를 듣고,궁금한 점은 직접 물어보세요. 질문하고, 대화하며,영감은 자연스럽게 찾아옵니다.</p>
                         <a href="#" className="marketplace-link">영감 마켓 둘러보기 &rarr;</a>
                     </div>
                     <div className="marketplace-image-container">
-                        <img src="https://placehold.co/1200x900/000000/a1a1a6?text=영감을+주는+꿈" alt="영감을 주는 꿈 이미지" className="marketplace-image" />
+                        <img src="images/Landing/message.png" alt="영감을 주는 꿈 이미지" className="marketplace-image" />
                     </div>
                 </div>
             </div>

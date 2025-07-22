@@ -5,7 +5,7 @@ import { updateUserProfile, useUser } from "../../contexts/UserContext";
 import '../../../public/css/MyPage.css'
 
 const EditProfilePage = () => {
-    const { user, updateUser } = useUser();
+    const { user, refetch } = useUser();
     const [nickname, setNickname] = useState(user?.nickname || '');
     const [email, setEmail] = useState(user?.email || '');
     const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
@@ -39,31 +39,34 @@ const EditProfilePage = () => {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        setMessage(null);
+    e.preventDefault();
+    setIsSubmitting(true);
+    setMessage(null);
 
-        const formData = new FormData();
-        const requestDto: { nickname?: string, isRemoveProfileImage?: boolean } = {};
+    const formData = new FormData();
+    const requestDto: { nickname?: string, isRemoveProfileImage?: boolean } = {};
+    
+    if (nickname !== user?.nickname) requestDto.nickname = nickname;
+    if (preview !== user?.profileImageUrl && !profileImageFile) requestDto.isRemoveProfileImage = true;
+
+    formData.append('request', new Blob([JSON.stringify(requestDto)], { type: 'application/json' }));
+    if (profileImageFile) {
+        formData.append('profileImageFile', profileImageFile);
+    }
+
+    try {
+        // 1. 업데이트 API를 호출합니다.
+        await updateUserProfile(formData);
+        // 2. 성공하면, refetch 함수를 호출하여 사용자 정보를 새로고침합니다.
+        await refetch(); 
         
-        if (nickname !== user?.nickname) requestDto.nickname = nickname;
-        if (preview !== user?.profileImageUrl && !profileImageFile) requestDto.isRemoveProfileImage = true;
-
-        formData.append('request', new Blob([JSON.stringify(requestDto)], { type: 'application/json' }));
-        if (profileImageFile) {
-            formData.append('profileImageFile', profileImageFile);
-        }
-
-        try {
-            const updatedData = await updateUserProfile(formData);
-            updateUser(updatedData);
-            setMessage({ type: 'success', text: '프로필이 성공적으로 업데이트되었습니다.' });
-        } catch (error) {
-            setMessage({ type: 'error', text: '프로필 업데이트에 실패했습니다.' });
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+        setMessage({ type: 'success', text: '프로필이 성공적으로 업데이트되었습니다.' });
+    } catch (error: any) {
+        setMessage({ type: 'error', text: error.message || '프로필 업데이트에 실패했습니다.' });
+    } finally {
+        setIsSubmitting(false);
+    }
+};
 
     if (!user) return <SplinePointer />;
 

@@ -16,6 +16,7 @@ import PostEditPage from './pages/PostEditPage';
 import DirectChatPage from './pages/DirectChatPage';
 import ChatPage from './pages/ChatPage';
 import LandingPage from './pages/LandingPage';
+import OAuth2RedirectHandler from './pages/OAuth2RedirectHandler';
 
 
 
@@ -35,20 +36,22 @@ function App() {
                 <Header /> {/* 모든 페이지에 공통으로 보이는 헤더 */}
                 <Routes>
                     {/* 랜딩 페이지 라우트 */}
-
-                    {/* <Route path="/" element={<HomePage />} /> */}
                     <Route path="/" element={<LandingPage />} />
+
+                    {/* 로그인 회원가입 */}
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
 
                     {/* 기존의 다른 페이지 라우트들 */}
                     <Route path="/posts" element={<PostListPage />} />
                     <Route path="/posts/:postId" element={<PostDetailPage />} />
                     <Route path="/posts/:postId/edit" element={<PostEditPage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
                     <Route path="/posts/new" element={<PostCreatePage />} />
                     <Route path="/chat/:chatRoomId" element={<DirectChatPage />} />
                     <Route path="/chat" element={<ChatPage />} />
-                    {/* <Route path="/myPage" element={<MyPage />} /> */}
+                    
+                    {/* 내 정보 페이지 */}
                     <Route path="/myPage/*" element={<MyPage />} />
                     <Route path="/sound-mixer" element={<SoundMixer />} />
 

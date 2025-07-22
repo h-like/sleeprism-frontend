@@ -106,11 +106,9 @@ function RegisterPage() {
   };
   
   // 소셜 로그인 핸들러 (기능은 나중에 구현)
-  const handleSocialLogin = (provider: 'google' | 'naver' | 'kakao') => {
-    // TODO: 백엔드 소셜 로그인 URL로 리다이렉션하는 로직을 추가하세요.
-    // 예: window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
-    alert(`${provider} 소셜 로그인 기능은 아직 구현 중입니다.`);
-  };
+   const handleSocialLogin = (provider) => {
+   window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
+ };
 
   return (
     <div className="main-container"> {/* main-container -> login-container */}

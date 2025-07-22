@@ -57,12 +57,11 @@ function LoginPage() {
     }
   };
   
-  // 소셜 로그인 핸들러 (기능은 나중에 구현)
-  const handleSocialLogin = (provider: 'google' | 'naver' | 'kakao') => {
-    // TODO: 백엔드 소셜 로그인 URL로 리다이렉션하는 로직을 추가하세요.
-    // 예: window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
-    alert(`${provider} 소셜 로그인 기능은 아직 구현 중입니다.`);
-  };
+  // 소셜 로그인 핸들러 
+  const handleSocialLogin = (provider) => {
+    // 이 부분은 백엔드 인증 시작 URL로 사용자를 이동시킵니다.
+    window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
+  };
 
   return (
     <div className="main-container">
