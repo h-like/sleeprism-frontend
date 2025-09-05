@@ -17,7 +17,7 @@
 
 # 꿈 해몽 flowchart
 
-```
+```mermaid
 graph TD
     subgraph "사용자 (공통)"
         Action_A["1. 꿈 내용으로 '게시글' 작성"] --> Server_A["DB에 게시글 저장 (MySQL)"];
@@ -63,8 +63,9 @@ graph TD
         Sale_D_Transaction --> Sale_E;
     end
 ```
+
 # 웹소켓을 이용한 채팅
-```
+```mermaid
 graph TD
     subgraph "사용자 A (발신자)"
         Action_Chat_A["/1. 채팅방 목록에서 채팅방 선택"] --> Server_Chat_A["채팅방 상세 정보 및 이전 대화 내역 조회"];
