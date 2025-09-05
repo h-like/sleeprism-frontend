@@ -16,9 +16,9 @@
 ---
 
 ## 🛠 기술 스택
-Frontend: React, TypeScript
-Backend: Spring Boot, SpringSecurity, WebSocket
-Database: MySQL
+- Frontend: React, TypeScript
+- Backend: Spring Boot, SpringSecurity, WebSocket
+- Database: MySQL
 
 ---
 
