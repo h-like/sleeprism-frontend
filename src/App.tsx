@@ -31,7 +31,7 @@ function App() {
   };
 
   return (
-     <Router>
+     <div>
             <ThemeProvider>
                 <Header /> {/* 모든 페이지에 공통으로 보이는 헤더 */}
                 <Routes>
@@ -60,7 +60,7 @@ function App() {
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </ThemeProvider>
-        </Router>
+        </div>
   );
 }
 
