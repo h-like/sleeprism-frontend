@@ -2,7 +2,7 @@
 
 > 꿈을 공유하고 해석하는 AI 기반 커뮤니티 서비스  
 
-[배포 링크](https://example.com) | [시연 영상](https://youtu.be/zpVfVakX74U) | [포트폴리오](https://example.com)
+[배포 링크](https://h-like.github.io/sleeprism-frontend/) | [시연 영상](https://youtu.be/zpVfVakX74U) | [포트폴리오](https://example.com)
 
 ---
 
