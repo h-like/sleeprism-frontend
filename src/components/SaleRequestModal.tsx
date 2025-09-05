@@ -103,7 +103,7 @@ function SaleRequestModal({ postId, postTitle, onClose, onSuccess }: SaleRequest
           &quot;{postTitle}&quot;
         </p>
         
-        <form onSubmit={handleSubmit} className="modal-content-view" >
+        <form onSubmit={handleSubmit} className="modal-content-form" >
           <div>
             <label htmlFor="proposedPrice" className="content-text">
               제안 가격 (원)

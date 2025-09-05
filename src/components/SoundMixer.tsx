@@ -383,7 +383,7 @@ function SoundMixer() {
             <div className="mixer-card">
                 <div className="content-wrapper">
                     <h1 className="title">
-                        나만의 몽환 사운드 믹서
+                        나만의 ASMR 사운드 믹서
                     </h1>
 
                     {/* 마스터 볼륨 및 뮤트 */}
