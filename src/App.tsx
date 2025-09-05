@@ -1,6 +1,6 @@
 // src/App.js 또는 src/index.js (메인 엔트리 파일)
 import React, { useState } from 'react'; // useState import
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import PostListPage from './pages/PostListPage';
 import PostDetailPage from './pages/PostDetailPage';
 import RegisterPage from './pages/RegisterPage';
