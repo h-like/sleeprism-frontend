@@ -25,3 +25,4 @@ dist-ssr
 
 /vedio
 *.mp4
+.vercel
