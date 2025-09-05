@@ -15,7 +15,14 @@
 
 ---
 
-# 꿈 해몽 flowchart
+## 🛠 기술 스택
+Frontend: React, TypeScript
+Backend: Spring Boot, SpringSecurity, WebSocket
+Database: MySQL
+
+---
+
+## 꿈 해몽 flowchart
 
 ```mermaid
 graph TD
