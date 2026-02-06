@@ -4,6 +4,8 @@
 
 [배포 링크](https://h-like.github.io/sleeprism-frontend/) | [시연 영상](https://youtu.be/zpVfVakX74U) | [포트폴리오](https://example.com)
 
+![Project Banner](/main.gif) 
+
 ---
 
 ## 🧠 주요 기능
